@@ -1,0 +1,30 @@
+name: tgbots
+
+services:
+  youtube-downloader:
+    build:
+      context: ./services/youtube-downloader
+    env_file:
+      - .env
+    environment:
+      DOWNLOAD_DIR: /data/downloads
+    restart: unless-stopped
+    init: true
+    read_only: true
+    user: "10001:10001"
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /data/downloads:size=256m,mode=0700,uid=10001,gid=10001
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 768m
+    cpus: 1.0
+    stop_grace_period: 30s
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
